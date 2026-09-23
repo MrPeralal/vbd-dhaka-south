@@ -10,10 +10,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --vbd-forest: #0B5237;        /* Sidebar & Primary Branding */
-      --vbd-dark-blue: #0F172A;     /* Headers & Dark Blue Accents */
-      --vbd-accent-blue: #1E3A8A;   /* Highlight Buttons & Cards */
-      --vbd-light-bg: #F0FDF4;      /* Soft Light Green background */
+      --vbd-forest: #0B5237;        /* Sidebar & Primary Forest Green */
+      --vbd-dark-blue: #0F172A;     /* Headers & Dark Navy Blue */
+      --vbd-accent-blue: #1E3A8A;   /* Primary Actions & Highlights */
+      --vbd-light-bg: #F0FDF4;      /* Clean Soft Green/Gray Background */
       --vbd-card-bg: #FFFFFF;
       --vbd-text-dark: #1E293B;
     }
@@ -24,7 +24,7 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Sidebar - VBD Forest Green Theme */
+    /* Sidebar Styling */
     .sidebar {
       background-color: var(--vbd-forest);
       min-height: 100vh;
@@ -50,7 +50,7 @@
       width: 20px;
     }
 
-    /* ID Card & Headers - Dark Blue / Forest Hybrid */
+    /* Top Identity Header Card */
     .id-card-banner {
       background: linear-gradient(135deg, var(--vbd-forest) 0%, var(--vbd-dark-blue) 100%);
       color: white;
@@ -67,7 +67,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
 
-    /* Custom Color Buttons - Dark Blue & Forest */
+    /* Custom Buttons */
     .btn-vbd-primary {
       background-color: var(--vbd-forest);
       color: #FFFFFF;
@@ -122,7 +122,7 @@
         <small class="text-light opacity-75">Geo-Attendance Hub</small>
       </div>
       
-      <ul class="nav flex-column mt-3">
+      <ul class="nav flex-column mt-3" id="sidebarMenuList">
         <li class="nav-item">
           <a class="nav-link active" href="#" onclick="switchTab('tabDashboard', this)">
             <i class="fa-solid fa-chart-line"></i> ড্যাশবোর্ড
@@ -133,6 +133,7 @@
             <i class="fa-solid fa-location-crosshairs"></i> আজ ইভেন্ট ও চেক-ইন
           </a>
         </li>
+        <!-- Role Restricted Menus -->
         <li class="nav-item" id="navCreateEvent" style="display: none;">
           <a class="nav-link" href="#" onclick="switchTab('tabCreateEvent', this)">
             <i class="fa-solid fa-calendar-plus"></i> ইভেন্ট ক্রিয়েট (HRS/Project)
@@ -168,22 +169,28 @@
     <!-- Main Content Area -->
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
       
-      <!-- Top Identity Card Header -->
+      <!-- Top Profile Banner -->
       <div class="id-card-banner d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
           <img id="userImg" src="https://via.placeholder.com/65" class="rounded-circle me-3 border border-2 border-white" width="65" height="65" alt="Profile">
           <div>
             <h5 class="fw-bold mb-1" id="usrNameDisplay">MD. FAZLIY RABBY</h5>
             <span class="badge badge-vbd-tag" id="usrRoleDisplay">DISTRICT VICE PRESIDENT</span>
-            <small class="d-block mt-1 text-light opacity-75" id="usrUpazilaDisplay">Scope: All Upazilas (Master)</small>
+            <small class="d-block mt-1 text-light opacity-75" id="usrUpazilaDisplay">Scope: District Level (Master Control)</small>
           </div>
         </div>
         <div>
-          <button class="btn btn-sm btn-light fw-bold text-dark" onclick="fetchLivePortalData()"><i class="fa-solid fa-rotate me-1"></i> রিফ্রেশ ডাটা</button>
+          <!-- Role Switcher for Testing Purposes -->
+          <select class="form-select form-select-sm bg-dark text-white border-secondary" id="demoRoleSelector" onchange="simulateUserRole(this.value)">
+            <option value="DISTRICT_VP">Demo: District Vice President</option>
+            <option value="UPAZILA_HRS">Demo: Keraniganj - HRS</option>
+            <option value="UPAZILA_PRES">Demo: Keraniganj - President</option>
+            <option value="VOLUNTEER">Demo: General Volunteer</option>
+          </select>
         </div>
       </div>
 
-      <!-- TAB 1: VOLUNTEER & BOARD DASHBOARD -->
+      <!-- TAB 1: DASHBOARD -->
       <div id="tabDashboard" class="tab-pane-custom">
         <div class="row g-3 mb-4">
           <div class="col-md-3">
@@ -221,8 +228,8 @@
                   <th>ইভেন্ট নেম</th>
                   <th>তারিখ</th>
                   <th>উপজেলা</th>
-                  <th>চেক-ইন টাইম</th>
-                  <th>চেক-আউট টাইম</th>
+                  <th>চেক-ইন সময়</th>
+                  <th>চেক-আউট সময়</th>
                   <th>স্ট্যাটাস</th>
                 </tr>
               </thead>
@@ -234,32 +241,32 @@
         </div>
       </div>
 
-      <!-- TAB 2: ACTIVE EVENT CHECK-IN (GPS & POWER FORWARDING) -->
+      <!-- TAB 2: ACTIVE EVENT CHECK-IN & POWER DELEGATION -->
       <div id="tabActiveEvents" class="tab-pane-custom" style="display: none;">
         <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-location-dot me-2"></i>আজকের ইভেন্ট ও জিও-ফেন্স চেক-ইন</h5>
         
         <div class="card stat-card mb-4 border-start border-4 border-success">
           <h6 class="fw-bold text-success"><i class="fa-solid fa-bullhorn me-2"></i>অ্যাক্টিভ ইভেন্ট ইনফরমেশন</h6>
           <div id="activeEventDetails" class="mt-2">
-            <p class="text-muted">আপনার সীমানায় বর্তমানে কোনো অ্যাক্টিভ ইভেন্ট নেই বা লোড হচ্ছে...</p>
+            <p class="text-muted">আপনার উপজেলা সীমানায় বর্তমানে কোনো অ্যাক্টিভ ইভেন্ট নেই বা লোড হচ্ছে...</p>
           </div>
-          <div id="gpsActionArea" class="mt-3" style="display: none;">
-            <button class="btn btn-vbd-primary btn-lg me-2" onclick="processCheckIn()"><i class="fa-solid fa-circle-check me-1"></i> Check-In (GPS Verified)</button>
-            <button class="btn btn-vbd-blue btn-lg" onclick="processCheckOut()"><i class="fa-solid fa-right-from-bracket me-1"></i> Check-Out</button>
+          <div id="gpsActionArea" class="mt-3">
+            <button class="btn btn-vbd-primary btn-lg me-2" onclick="processCheckIn()"><i class="fa-solid fa-circle-check me-1"></i> Check-In (GPS Range Only)</button>
+            <button class="btn btn-vbd-blue btn-lg" onclick="processCheckOut()"><i class="fa-solid fa-right-from-bracket me-1"></i> Check-Out (Anywhere)</button>
           </div>
         </div>
 
-        <!-- HRS Power Forwarding Panel (HRS / Project Sec Only) -->
+        <!-- Power Forwarding Panel (HRS / Project Sec Only) -->
         <div class="card stat-card master-card-box" id="powerForwardPanel" style="display: none;">
-          <h6 class="fw-bold" style="color: var(--vbd-accent-blue);"><i class="fa-solid fa-share-nodes me-2"></i>স্পেশাল জিও-ফেন্স পাওয়ার ফরওয়ার্ডিং (HRS / Project Sec)</h6>
-          <p class="small text-muted mb-3">আপনি ইভেন্টে উপস্থিত থাকতে না পারলে নির্দিষ্ট ভলান্টিয়ারকে অস্থায়ী চেক-ইন পাওয়ার ডেলিগেট করুন।</p>
+          <h6 class="fw-bold" style="color: var(--vbd-accent-blue);"><i class="fa-solid fa-share-nodes me-2"></i>স্পেশাল জিও-ফেন্স পাওয়ার ফরওয়ার্ডিং (HRS / Project Secretary)</h6>
+          <p class="small text-muted mb-3">ইভেন্টে নিজে উপস্থিত থাকতে না পারলে নির্দিষ্ট ভলান্টিয়ারের ইমেইল দিয়ে জিপিএস চেক-ইন পাওয়ার ডেলিগেট করুন।</p>
           
           <form onsubmit="handlePowerForward(event)" class="row g-2 align-items-center">
             <div class="col-md-5">
               <input type="email" id="fwdEmail" class="form-control" placeholder="ভলান্টিয়ারের ইমেইল দিন" required>
             </div>
             <div class="col-md-3">
-              <input type="number" id="fwdRadius" class="form-control" placeholder="রেঞ্জ (মিটার)" value="50" min="5" required>
+              <input type="number" id="fwdRadius" class="form-control" placeholder="রেঞ্জ (মিটার)" value="50" min="5" max="200" required>
             </div>
             <div class="col-md-4">
               <button type="submit" class="btn btn-vbd-blue w-100"><i class="fa-solid fa-bolt me-1"></i> পাওয়ার ফরওয়ার্ড করুন</button>
@@ -269,9 +276,9 @@
         </div>
       </div>
 
-      <!-- TAB 3: CREATE EVENT (HRS / PROJECT SECRETARY) -->
+      <!-- TAB 3: CREATE EVENT (HRS / PROJECT SECRETARY / HRO / PO ONLY) -->
       <div id="tabCreateEvent" class="tab-pane-custom" style="display: none;">
-        <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-calendar-plus me-2"></i>নতুন ইভেন্ট ক্রিয়েট ও গুগল ফর্ম শিট লিঙ্ক সিঙ্ক</h5>
+        <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-calendar-plus me-2"></i>নতুন ইভেন্ট ক্রিয়েট ও গুগল ফর্ম সিঙ্ক</h5>
         <div class="card stat-card">
           <form onsubmit="handleCreateEvent(event)">
             <div class="row g-3">
@@ -294,7 +301,7 @@
               <div class="col-md-12">
                 <label class="form-label fw-bold">গুগল ফর্ম রেসপন্স শিট লিংক (Anyone with the link - View Only)</label>
                 <input type="url" id="ceSheetUrl" class="form-control" placeholder="https://docs.google.com/spreadsheets/d/..." required>
-                <small class="text-muted d-block mt-1">সিস্টেম স্বয়ংক্রিয়ভাবে ফর্ম রেজিস্ট্রেশনকারীদের ইউনিক প্রোফাইল তৈরি করে ইমেইল পাঠাবে।</small>
+                <small class="text-muted d-block mt-1">সিস্টেম স্বয়ংক্রিয়ভাবে ফর্মের নতুন রেসপন্স থেকে রেডিমেড প্রোফাইল বানিয়ে রেজিস্ট্রার্ড ইমেইলে পাঠিয়ে দিবে।</small>
               </div>
             </div>
             <button type="submit" class="btn btn-vbd-primary mt-4"><i class="fa-solid fa-floppy-disk me-1"></i> ইভেন্ট সেভ ও লাইভ সিঙ্ক চালু করুন</button>
@@ -304,13 +311,15 @@
 
       <!-- TAB 4: UPAZILA BOARD REPORT VIEW -->
       <div id="tabUpazilaReports" class="tab-pane-custom" style="display: none;">
-        <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-folder-open me-2"></i>উপজেলা ইভেন্ট ও অ্যাটেন্ডেন্স রিপোর্ট</h5>
+        <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-folder-open me-2"></i>উপজেলা ইভেন্ট ও অ্যাটেন্ডেন্স রিপোর্ট (Isolated View)</h5>
         <div class="card stat-card mb-4">
           <div class="row g-3 align-items-center mb-3">
             <div class="col-md-6">
               <label class="form-label fw-bold">ইভেন্ট সিলেক্ট করুন</label>
               <select class="form-select" id="reportEventSelect" onchange="loadEventAttendanceDetails()">
                 <option value="">-- ইভেন্ট নির্বাচন করুন --</option>
+                <option value="EVT_01">গাছ রোপণ কর্মসূচি (১৫ আগস্ট)</option>
+                <option value="EVT_02">রক্তদান শিবির (২০ আগস্ট)</option>
               </select>
             </div>
             <div class="col-md-6 text-end mt-4">
@@ -373,15 +382,19 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
           <div>
             <h5 class="fw-bold text-danger mb-1"><i class="fa-solid fa-key me-2"></i>Master Access Sheet (Annual Permission Control)</h5>
-            <p class="text-muted small mb-0">নতুন বোর্ডে পদবি হস্তান্তরের জন্য শুধুমাত্র নির্দিষ্ট মেম্বারের ইমেইল পরিবর্তন করে আপডেট করুন।</p>
+            <p class="text-muted small mb-0">নতুন বোর্ডে দায়িত্ব হস্তান্তরের জন্য মেম্বারের ইমেইল পরিবর্তন করে আপডেট করুন।</p>
           </div>
         </div>
 
-        <!-- District Board Positions -->
+        <!-- District Board Positions (7 Positions) -->
         <div class="card stat-card master-card-box mb-4">
           <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-crown me-2"></i>District Board Members (7 Positions)</h6>
           <form onsubmit="saveMasterAccess(event, 'district')">
             <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">President Email</label>
+                <input type="email" id="mstr_dist_pres" class="form-control" placeholder="president.dhakasouth@vbd.com">
+              </div>
               <div class="col-md-6">
                 <label class="form-label small fw-bold">Vice President Email</label>
                 <input type="email" id="mstr_dist_vp" class="form-control" placeholder="vp.dhakasouth@vbd.com">
@@ -419,7 +432,7 @@
               <label class="form-label fw-bold">উপজেলা নির্বাচন করুন</label>
               <select class="form-select" id="mstrUpazilaSelect" onchange="renderUpazilaMasterForm()">
                 <option value="DSCC">Dhaka South City Corporation (DSCC)</option>
-                <option value="Keraniganj">Keraniganj</option>
+                <option value="Keraniganj" selected>Keraniganj</option>
                 <option value="Dohar">Dohar</option>
                 <option value="Nababganj">Nababganj</option>
               </select>
@@ -462,19 +475,23 @@
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold">পূর্ণ নাম</label>
-                <input type="text" id="profFullName" class="form-control" required>
+                <input type="text" id="profFullName" class="form-control" value="MD. FAZLIY RABBY" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-bold">রেজিস্টার্ড প্রাইমারি ইমেইল (Unchangeable)</label>
-                <input type="email" id="profEmail" class="form-control bg-light" readonly>
+                <label class="form-label fw-bold">রেজিস্টার্ড ইমেইল (Unchangeable)</label>
+                <input type="email" id="profEmail" class="form-control bg-light" value="rabby@vbd.com" readonly>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">অফিশিয়াল VBD ইমেইল (অপশনাল)</label>
-                <input type="email" id="profVbdEmail" class="form-control" placeholder="name@vbd.com">
+                <input type="email" id="profVbdEmail" class="form-control" placeholder="vp.dhakasouth@vbd.com">
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">ফোন নম্বর</label>
-                <input type="text" id="profPhone" class="form-control" required>
+                <input type="text" id="profPhone" class="form-control" value="+8801700000000" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">উপজেলা</label>
+                <input type="text" id="profUpazila" class="form-control bg-light" value="Keraniganj" readonly>
               </div>
             </div>
             <button type="submit" class="btn btn-vbd-primary mt-3"><i class="fa-solid fa-user-check me-1"></i> প্রোফাইল আপডেট করুন</button>
@@ -494,7 +511,7 @@
               <input type="password" id="inputNewPass" class="form-control" placeholder="নতুন পাসওয়ার্ড">
             </div>
           </div>
-          <button class="btn btn-vbd-primary mt-3" onclick="confirmPasswordReset()"><i class="fa-solid fa-key me-1"></i> পাসওয়ার্ড রিসেট সুনিশ্চিত করুন</button>
+          <button class="btn btn-vbd-primary mt-3" onclick="confirmPasswordReset()"><i class="fa-solid fa-key me-1"></i> পাসওয়ার্ড আপডেট সুনিশ্চিত করুন</button>
         </div>
       </div>
 
@@ -503,8 +520,55 @@
 </div>
 
 <script>
-  // Global Configurations
-  const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  // Dynamic Role Control Engine
+  function simulateUserRole(role) {
+    const navCreateEvent = document.getElementById('navCreateEvent');
+    const navUpazilaReports = document.getElementById('navUpazilaReports');
+    const navVolunteerDir = document.getElementById('navVolunteerDir');
+    const navMasterControl = document.getElementById('navMasterControl');
+    const powerForwardPanel = document.getElementById('powerForwardPanel');
+    
+    // Reset Navigation Visibility
+    navCreateEvent.style.display = 'none';
+    navUpazilaReports.style.display = 'none';
+    navVolunteerDir.style.display = 'none';
+    navMasterControl.style.display = 'none';
+    powerForwardPanel.style.display = 'none';
+
+    if (role === 'DISTRICT_VP') {
+      document.getElementById('usrNameDisplay').innerText = "MD. FAZLIY RABBY";
+      document.getElementById('usrRoleDisplay').innerText = "DISTRICT VICE PRESIDENT";
+      document.getElementById('usrUpazilaDisplay').innerText = "Scope: All Upazilas (Master Control)";
+      
+      navUpazilaReports.style.display = 'block';
+      navVolunteerDir.style.display = 'block';
+      navMasterControl.style.display = 'block';
+    } 
+    else if (role === 'UPAZILA_HRS') {
+      document.getElementById('usrNameDisplay').innerText = "KERANIGANJ HRS";
+      document.getElementById('usrRoleDisplay').innerText = "HUMAN RESOURCE SECRETARY";
+      document.getElementById('usrUpazilaDisplay').innerText = "Scope: Keraniganj Only";
+      
+      navCreateEvent.style.display = 'block';
+      navUpazilaReports.style.display = 'block';
+      navVolunteerDir.style.display = 'block';
+      powerForwardPanel.style.display = 'block';
+    } 
+    else if (role === 'UPAZILA_PRES') {
+      document.getElementById('usrNameDisplay').innerText = "KERANIGANJ PRESIDENT";
+      document.getElementById('usrRoleDisplay').innerText = "UPAZILA PRESIDENT";
+      document.getElementById('usrUpazilaDisplay').innerText = "Scope: Keraniganj Only";
+      
+      navUpazilaReports.style.display = 'block';
+      navVolunteerDir.style.display = 'block';
+    } 
+    else {
+      // General Volunteer
+      document.getElementById('usrNameDisplay').innerText = "GENERAL VOLUNTEER";
+      document.getElementById('usrRoleDisplay').innerText = "VOLUNTEER";
+      document.getElementById('usrUpazilaDisplay').innerText = "Scope: Keraniganj";
+    }
+  }
 
   function switchTab(tabId, element) {
     document.querySelectorAll('.tab-pane-custom').forEach(pane => pane.style.display = 'none');
@@ -514,12 +578,8 @@
     if(element) element.classList.add('active');
   }
 
-  function fetchLivePortalData() {
-    console.log("Fetching live portal updates...");
-  }
-
   function processCheckIn() {
-    alert("GPS লোকেশন যাচাই করা হচ্ছে... চেক-ইন সফল!");
+    alert("GPS লোকেশন ও রেঞ্জ ভেরিফাই করা হচ্ছে... চেক-ইন সফল!");
   }
 
   function processCheckOut() {
@@ -528,17 +588,17 @@
 
   function handlePowerForward(e) {
     e.preventDefault();
-    alert("পাওয়ার ফরওয়ার্ড সফল হয়েছে!");
+    alert("স্পেশাল জিপিএস পাওয়ার সফলভাবে ফরওয়ার্ড করা হয়েছে!");
   }
 
   function handleCreateEvent(e) {
     e.preventDefault();
-    alert("ইভেন্ট তৈরি সফল এবং গুগল ফর্ম সিঙ্ক চালু করা হয়েছে!");
+    alert("ইভেন্ট তৈরি সফল এবং গুগল ফর্ম সিঙ্ক চালু হয়েছে!");
   }
 
   function saveMasterAccess(e, scope) {
     e.preventDefault();
-    alert(scope.toUpperCase() + " পজিশনের পারমিশন ইমেইল সফলভাবে আপডেট ও সেভ হয়েছে!");
+    alert(scope.toUpperCase() + " পজিশনের পারমিশন আপডেট ও সেভ হয়েছে!");
   }
 
   function updateProfileDetails(e) {
@@ -547,16 +607,21 @@
   }
 
   function triggerOTP() {
-    alert("আপনার ইমেইলে ওটিপি সেন্ড করা হয়েছে!");
+    alert("আপনার ইমেইলে OTP পাঠানো হয়েছে!");
   }
 
   function confirmPasswordReset() {
-    alert("পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে!");
+    alert("পাসওয়ার্ড রিসেট সফল হয়েছে!");
   }
 
   function logoutSystem() {
-    alert("লগআউট করা হচ্ছে...");
+    alert("লগআউট সম্পন্ন হচ্ছে...");
   }
+
+  // Initialize Default View
+  window.onload = function() {
+    simulateUserRole('DISTRICT_VP');
+  };
 </script>
 
 </body>
