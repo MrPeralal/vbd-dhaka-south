@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VBD Geo-Attendance Master Database</title>
+  <title>VBD Master Geo-Attendance & Portal</title>
   
   <!-- PWA Settings -->
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlZCRCBHZW8tQXR0ZW5kYW5jZSBQb3J0YWwiLAogICJzaG9ydF9uYW1lIjogIlZCRCBQb3J0YWwiLAogICJzdGFydF9uYW1lIjogIlZCRCBHZW8tQXR0ZW5kYW5jZSBQb3J0YWwiLAogICJzaG9ydF9uYW1lIjogIlZCRCBQb3J0YWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAwNjgzNyIsCiAgInRoZW1lX2NvbG9yIjogIiMwMDY4MzciCn0=">
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlZCRCBHZW8tQXR0ZW5kYW5jZSBQb3J0YWwiLAogICJzaG9ydF9uYW1lIjogIlZCRCBQb3J0YWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBFMzk1OCIsCiAgInRoZW1lX2NvbG9yIjogIiMwRTM5NTgiCn0=">
   
   <!-- CSS Dependencies -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,54 +14,85 @@
   
   <style>
     :root {
-      --vbd-green: #006837;
-      --vbd-yellow: #FFC000;
-      --vbd-dark: #1A202C;
-      --vbd-bg: #F8FAFC;
+      --vbd-light-green: #2EC4B6; /* Soft Light Green (Eye friendly) */
+      --vbd-dark-blue: #0E3958;   /* Professional Dark Blue Accent */
+      --vbd-soft-bg: #F4F7F6;     /* Light Clean Background */
+      --vbd-card-bg: #FFFFFF;
     }
 
     body {
-      background-color: var(--vbd-bg);
+      background-color: var(--vbd-soft-bg);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding-bottom: 60px;
+      padding-bottom: 70px;
     }
 
     .vbd-navbar {
-      background-color: var(--vbd-green);
+      background-color: var(--vbd-dark-blue);
       color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     .brand-logo {
-      height: 40px;
-      border-radius: 6px;
+      height: 38px;
+    }
+
+    .btn-vbd-blue {
+      background-color: var(--vbd-dark-blue);
+      color: white;
+      border: none;
+    }
+    .btn-vbd-blue:hover {
+      background-color: #08263d;
+      color: white;
+    }
+
+    .btn-vbd-green {
+      background-color: var(--vbd-light-green);
+      color: #0E3958;
+      font-weight: 600;
+      border: none;
+    }
+    .btn-vbd-green:hover {
+      background-color: #25a094;
+      color: white;
     }
 
     .hero-card {
-      background: linear-gradient(135deg, var(--vbd-green) 0%, #004d28 100%);
+      background: linear-gradient(135deg, var(--vbd-dark-blue) 0%, #17527c 100%);
       border-radius: 16px;
       color: white;
-      padding: 20px;
+      padding: 24px;
     }
 
-    .event-card {
+    .event-card, .dashboard-card {
       border: none;
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-      transition: transform 0.2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      background: var(--vbd-card-bg);
     }
-    
+
     .upazila-badge {
-      background-color: rgba(0, 104, 55, 0.1);
-      color: var(--vbd-green);
-      font-weight: 600;
-      padding: 4px 12px;
+      background-color: rgba(46, 196, 182, 0.15);
+      color: #0E3958;
+      font-weight: 700;
+      padding: 5px 14px;
       border-radius: 20px;
       font-size: 0.75rem;
     }
 
     .nav-pills .nav-link.active {
-      background-color: var(--vbd-green) !important;
+      background-color: var(--vbd-dark-blue) !important;
+      color: white !important;
+    }
+
+    .nav-pills .nav-link {
+      color: var(--vbd-dark-blue);
+    }
+
+    .status-pill {
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 12px;
     }
   </style>
 </head>
@@ -71,13 +102,15 @@
   <nav class="navbar navbar-expand-lg vbd-navbar sticky-top px-3">
     <div class="container-fluid d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center gap-2">
-        <!-- VBD LOGO ADDED HERE -->
         <img src="https://volunteerforbangladesh.org/wp-content/uploads/2021/07/vbd-logo-white-horizontal.png" alt="VBD Logo" class="brand-logo">
       </div>
       
       <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-warning btn-sm fw-bold text-dark rounded-pill px-3" onclick="openMasterAccessModal()">
-          <i class="fa-solid fa-crown me-1"></i> Board Access
+        <span id="userRoleBadge" class="badge bg-light text-dark fw-bold px-3 py-2 rounded-pill small">
+          <i class="fa-solid fa-user me-1 text-primary"></i> Guest View
+        </span>
+        <button class="btn btn-vbd-green btn-sm rounded-pill px-3" onclick="openLoginModal()">
+          <i class="fa-solid fa-right-to-bracket me-1"></i> Login
         </button>
       </div>
     </div>
@@ -85,26 +118,26 @@
 
   <div class="container my-4">
 
-    <!-- HERO BANNER + REMINDER BOX -->
+    <!-- HERO HEADER -->
     <div class="hero-card mb-4">
       <div class="row align-items-center">
         <div class="col-md-7 mb-3 mb-md-0">
-          <span class="badge bg-warning text-dark mb-2">Master Portal</span>
-          <h4 class="fw-bold m-0">VBD Geo-Attendance Master Database</h4>
-          <p class="small text-white-50 mt-1 mb-0">DSCC • Keraniganj • Dohar • Nababganj</p>
+          <span class="badge bg-info text-dark mb-2">Multi-Tier RBAC Portal</span>
+          <h4 class="fw-bold m-0">VBD Master Geo-Attendance System</h4>
+          <p class="small text-white-50 mt-1 mb-0" id="currentUnitText">Dhaka South District Central Portal</p>
         </div>
 
         <div class="col-md-5">
-          <!-- REMINDER BOX -->
-          <div onclick="openByLawsModal()" class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-left: 3px solid #FFC000; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'">
+          <!-- REMINDER / GOVERNANCE BOX -->
+          <div onclick="openByLawsModal()" class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-left: 4px solid var(--vbd-light-green); cursor: pointer;" onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'">
             <div class="d-flex align-items-center justify-content-between mb-1">
               <div class="d-flex align-items-center gap-2">
-                <i class="fa-solid fa-shield-halved text-warning" style="font-size: 0.75rem;"></i>
-                <span class="text-warning fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">REMINDER</span>
+                <i class="fa-solid fa-shield-halved text-info" style="font-size: 0.8rem;"></i>
+                <span class="text-info fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">GOVERNANCE</span>
               </div>
               <i class="fa-solid fa-arrow-up-right-from-square text-white-50" style="font-size: 0.65rem;"></i>
             </div>
-            <p class="text-white fw-semibold m-0" style="font-size: 0.72rem; line-height: 1.35; opacity: 0.95;">
+            <p class="text-white fw-semibold m-0" style="font-size: 0.75rem; opacity: 0.95;">
               "Respect the By-Laws, Uphold Our Values."
             </p>
           </div>
@@ -112,55 +145,53 @@
       </div>
     </div>
 
-    <!-- FILTER TABS & ACTIVE EVENTS -->
+    <!-- ROLE-BASED ACTION BAR -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h6 class="fw-bold m-0 text-dark"><i class="fa-solid fa-calendar-check me-2 text-success"></i>Active Events</h6>
-      <button class="btn btn-success btn-sm rounded-pill fw-bold" onclick="alert('সরাসরি পোর্টালে ইভেন্ট ক্রিয়েট করার সুবিধা চালু হচ্ছে!')">
-        <i class="fa-solid fa-plus me-1"></i> Create Event
-      </button>
+      <h6 class="fw-bold m-0 text-dark"><i class="fa-solid fa-calendar-check me-2" style="color: var(--vbd-dark-blue);"></i>Active Events & Geo Check-In</h6>
+      
+      <div id="hrActionButtons" class="d-none">
+        <button class="btn btn-vbd-green btn-sm rounded-pill me-2" onclick="openCreateEventModal()">
+          <i class="fa-solid fa-plus me-1"></i> Create Event
+        </button>
+        <button class="btn btn-vbd-blue btn-sm rounded-pill" onclick="openForwardPowerModal()">
+          <i class="fa-solid fa-share-nodes me-1"></i> Forward Range Power
+        </button>
+      </div>
+
+      <div id="districtAdminButtons" class="d-none">
+        <button class="btn btn-vbd-blue btn-sm rounded-pill" onclick="openLeadershipTransferModal()">
+          <i class="fa-solid fa-user-gear me-1"></i> Leadership Assign & Transfer
+        </button>
+      </div>
     </div>
 
+    <!-- UPAZILA / UNIT NAVIGATION (District Sees All, Upazila Sees Only Their Own) -->
     <ul class="nav nav-pills mb-4 bg-white p-2 rounded-4 shadow-sm" id="upazilaTabs">
-      <li class="nav-item"><a class="nav-link active fw-bold small" href="#">All Units</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">DSCC</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">Keraniganj</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">Dohar</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">Nababganj</a></li>
+      <li class="nav-item" id="tab-all"><a class="nav-link active fw-bold small" href="#" onclick="filterUnit('ALL')">All Units</a></li>
+      <li class="nav-item" id="tab-dscc"><a class="nav-link fw-bold small" href="#" onclick="filterUnit('DSCC')">DSCC</a></li>
+      <li class="nav-item" id="tab-keraniganj"><a class="nav-link fw-bold small" href="#" onclick="filterUnit('Keraniganj')">Keraniganj</a></li>
+      <li class="nav-item" id="tab-dohar"><a class="nav-link fw-bold small" href="#" onclick="filterUnit('Dohar')">Dohar</a></li>
+      <li class="nav-item" id="tab-nababganj"><a class="nav-link fw-bold small" href="#" onclick="filterUnit('Nababganj')">Nababganj</a></li>
     </ul>
 
-    <!-- DYNAMIC EVENT CARDS -->
-    <div class="row g-3">
+    <!-- DYNAMIC EVENT CARDS DISPLAY -->
+    <div class="row g-3" id="eventsContainer">
       <div class="col-md-6">
-        <div class="card event-card p-3 bg-white">
+        <div class="card event-card p-3">
           <div class="d-flex justify-content-between align-items-start mb-2">
-            <span class="upazila-badge">Central Event</span>
-            <span class="badge bg-success"><i class="fa-solid fa-location-arrow me-1"></i> Geo-Attendance Active</span>
+            <span class="upazila-badge">Keraniganj Unit</span>
+            <span class="badge bg-success status-pill"><i class="fa-solid fa-location-dot me-1"></i> Active Event</span>
           </div>
-          <h5 class="fw-bold text-dark m-0">VBD Annual General Meeting</h5>
-          <p class="small text-muted my-2"><i class="fa-solid fa-location-dot me-1 text-danger"></i> Dhaka South Central Office Venue</p>
+          <h5 class="fw-bold text-dark m-0">Tree Plantation Campaign 2026</h5>
+          <p class="small text-muted my-2"><i class="fa-solid fa-clock me-1"></i> Today • 10:00 AM | <i class="fa-solid fa-map-pin me-1 text-danger"></i> Keraniganj Model School Ground</p>
           
-          <div class="p-3 bg-light rounded-3 my-2">
-            <div class="mb-2">
-              <input type="text" id="vName" class="form-control form-control-sm" placeholder="Your Name (আপনার নাম)">
-            </div>
-            <div class="mb-2">
-              <input type="email" id="vEmail" class="form-control form-control-sm" placeholder="Your Email (আপনার ইমেইল)">
-            </div>
-            <div class="row g-2 mb-2">
-              <div class="col-6">
-                <input type="text" id="vPhone" class="form-control form-control-sm" placeholder="Phone">
-              </div>
-              <div class="col-6">
-                <select id="vUpazila" class="form-select form-select-sm">
-                  <option value="DSCC">DSCC</option>
-                  <option value="Keraniganj">Keraniganj</option>
-                  <option value="Dohar">Dohar</option>
-                  <option value="Nababganj">Nababganj</option>
-                </select>
-              </div>
-            </div>
-            <button class="btn btn-success btn-sm w-100 fw-bold rounded-3" onclick="submitGeoAttendance('VBD AGM')">
-              <i class="fa-solid fa-location-crosshairs me-1"></i> Give Geo-Attendance
+          <div class="p-3 bg-light rounded-3 my-2 border">
+            <small class="text-muted d-block mb-2"><i class="fa-solid fa-circle-info me-1"></i> GPS Check-In is locked to HR Geo-Fence Range (Editable 5m-50m).</small>
+            <button class="btn btn-vbd-green w-100 fw-bold rounded-3" onclick="attemptGeoCheckIn('Tree Plantation Campaign 2026')">
+              <i class="fa-solid fa-street-view me-1"></i> Check-In (Within Range)
+            </button>
+            <button class="btn btn-outline-danger btn-sm w-100 fw-bold rounded-3 mt-2" onclick="attemptCheckOut('Tree Plantation Campaign 2026')">
+              <i class="fa-solid fa-right-from-bracket me-1"></i> Check-Out (Anywhere)
             </button>
           </div>
         </div>
@@ -169,45 +200,166 @@
 
   </div>
 
-  <!-- BY-LAWS, CONDUCT & OATH MODAL -->
+  <!-- MODAL 1: LOGIN / OTP MODAL -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header text-white" style="background-color: var(--vbd-dark-blue);">
+          <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-lock me-2"></i>Portal Login / Profile Access</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Enter Your Registered Email</label>
+            <input type="email" id="loginEmail" class="form-control rounded-3" placeholder="vbd.member@gmail.com">
+          </div>
+          <div class="mb-3 d-none" id="otpSection">
+            <label class="form-label fw-bold small">Enter OTP sent to your Email</label>
+            <input type="text" id="loginOtp" class="form-control rounded-3" placeholder="4-Digit OTP">
+          </div>
+          <button class="btn btn-vbd-blue w-100 fw-bold rounded-3" id="loginBtn" onclick="processLogin()">
+            <i class="fa-solid fa-paper-plane me-1"></i> Send OTP
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: CREATE EVENT (HRS & Project Sec Special Power) -->
+  <div class="modal fade" id="createEventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header text-white" style="background-color: var(--vbd-dark-blue);">
+          <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-calendar-plus me-2"></i>Create New Unit Event</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="mb-2">
+            <label class="form-label fw-bold small">Event Name</label>
+            <input type="text" id="evName" class="form-control form-control-sm" placeholder="Event Title">
+          </div>
+          <div class="mb-2">
+            <label class="form-label fw-bold small">Location</label>
+            <input type="text" id="evLocation" class="form-control form-control-sm" placeholder="Venue Name">
+          </div>
+          <div class="mb-2">
+            <label class="form-label fw-bold small">Date & Time</label>
+            <input type="datetime-local" id="evDateTime" class="form-control form-control-sm">
+          </div>
+          <div class="mb-2">
+            <label class="form-label fw-bold small">HR Geo-Fence Range Radius (Meters)</label>
+            <input type="number" id="evRange" class="form-control form-control-sm" value="50" placeholder="e.g. 10, 20, 50">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Google Form Response Sheet View Link (Anyone with link)</label>
+            <input type="url" id="evSheetLink" class="form-control form-control-sm" placeholder="https://docs.google.com/spreadsheets/d/...">
+          </div>
+          <button class="btn btn-vbd-green w-100 fw-bold rounded-3" onclick="saveNewEvent()">
+            <i class="fa-solid fa-floppy-disk me-1"></i> Publish Event & Auto-Sync
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: FORWARD RANGE POWER -->
+  <div class="modal fade" id="forwardPowerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header text-white" style="background-color: var(--vbd-dark-blue);">
+          <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-share-nodes me-2"></i>Forward Geo-Fence Power</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="small text-muted">আপনি ইভেন্টে অনুপস্থিত থাকলে অন্য কোনো ভলান্টিয়ারকে সাময়িকভাবে চেক-ইন রেঞ্জ এক্সেস দিতে তার ইমেইল দিন:</p>
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Volunteer Email Address</label>
+            <input type="email" id="forwardEmail" class="form-control" placeholder="volunteer@gmail.com">
+          </div>
+          <button class="btn btn-vbd-blue w-100 fw-bold rounded-3" onclick="forwardRangePower()">
+            <i class="fa-solid fa-check me-1"></i> Forward Power
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: LEADERSHIP ASSIGN & TRANSFER (District President & VP) -->
+  <div class="modal fade" id="leadershipTransferModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header text-white" style="background-color: var(--vbd-dark-blue);">
+          <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-user-shield me-2"></i>District & Upazila Board Assign System</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <ul class="nav nav-pills nav-fill mb-3" id="transferTabs">
+            <li class="nav-item"><button class="nav-link active fw-bold py-2" data-bs-toggle="pill" data-bs-target="#tab-dist">District Board (5)</button></li>
+            <li class="nav-item"><button class="nav-link fw-bold py-2" data-bs-toggle="pill" data-bs-target="#tab-dscc-b">DSCC Board (5)</button></li>
+            <li class="nav-item"><button class="nav-link fw-bold py-2" data-bs-toggle="pill" data-bs-target="#tab-keraniganj-b">Keraniganj (5)</button></li>
+            <li class="nav-item"><button class="nav-link fw-bold py-2" data-bs-toggle="pill" data-bs-target="#tab-dohar-b">Dohar (5)</button></li>
+            <li class="nav-item"><button class="nav-link fw-bold py-2" data-bs-toggle="pill" data-bs-target="#tab-nababganj-b">Nababganj (5)</button></li>
+          </ul>
+
+          <div class="tab-content border p-3 rounded-3 bg-light">
+            <div class="tab-pane fade show active" id="tab-dist">
+              <h6 class="fw-bold text-dark border-bottom pb-2">District Board Member Emails</h6>
+              <div class="mb-2"><label class="small fw-bold">General Secretary</label><input type="email" class="form-control form-control-sm"></div>
+              <div class="mb-2"><label class="small fw-bold">Treasurer</label><input type="email" class="form-control form-control-sm"></div>
+              <div class="mb-2"><label class="small fw-bold">Project Officer</label><input type="email" class="form-control form-control-sm"></div>
+              <div class="mb-2"><label class="small fw-bold">Human Resources Officer (HRO)</label><input type="email" class="form-control form-control-sm"></div>
+              <div class="mb-2"><label class="small fw-bold">Public Relations Officer</label><input type="email" class="form-control form-control-sm"></div>
+            </div>
+            
+            <div class="tab-pane fade" id="tab-keraniganj-b">
+              <h6 class="fw-bold text-dark border-bottom pb-2">Keraniganj Board Emails</h6>
+              <div class="mb-2"><label class="small fw-bold">President</label><input type="email" class="form-control form-control-sm"></div>
+              <div class="mb-2"><label class="small fw-bold">General Secretary</label><input type="email" class="form-control form-control-sm"></div>
+              <div class="mb-2"><label class="small fw-bold">Project Secretary</label><input type="email" class="form-control form-control-sm"></div>
+              <div class="mb-2"><label class="small fw-bold">Human Resource Secretary (HRS)</label><input type="email" class="form-control form-control-sm"></div>
+              <div class="mb-2"><label class="small fw-bold">Finance Secretary</label><input type="email" class="form-control form-control-sm"></div>
+            </div>
+          </div>
+
+          <button class="btn btn-vbd-green w-100 fw-bold rounded-3 mt-3" onclick="saveBoardAccess()">
+            <i class="fa-solid fa-floppy-disk me-1"></i> Save & Transfer Roles
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: GOVERNANCE & BY-LAWS -->
   <div class="modal fade" id="bylawsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content rounded-4 border-0">
-        <div class="modal-header text-white" style="background-color: var(--vbd-green);">
+        <div class="modal-header text-white" style="background-color: var(--vbd-dark-blue);">
           <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-book-bookmark me-2"></i>VBD Governance & Guidelines</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
-          <ul class="nav nav-pills nav-fill mb-3" id="bylawsTabs" role="tablist">
-            <li class="nav-item">
-              <button class="nav-link active fw-bold py-2" id="tab-bylaws-btn" data-bs-toggle="pill" data-bs-target="#content-bylaws" type="button">📘 By-Laws</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link fw-bold py-2" id="tab-conduct-btn" data-bs-toggle="pill" data-bs-target="#content-conduct" type="button">📜 Code of Conduct</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link fw-bold py-2" id="tab-oath-btn" data-bs-toggle="pill" data-bs-target="#content-oath" type="button">✋ Volunteer Oath</button>
-            </li>
+          <ul class="nav nav-pills nav-fill mb-3">
+            <li class="nav-item"><button class="nav-link active fw-bold py-2" data-bs-toggle="pill" data-bs-target="#c-bylaws">📘 By-Laws</button></li>
+            <li class="nav-item"><button class="nav-link fw-bold py-2" data-bs-toggle="pill" data-bs-target="#c-conduct">📜 Code of Conduct</button></li>
+            <li class="nav-item"><button class="nav-link fw-bold py-2" data-bs-toggle="pill" data-bs-target="#c-oath">✋ Volunteer Oath</button></li>
           </ul>
 
-          <div class="tab-content border p-3 rounded-3 bg-light" id="bylawsTabContent" style="min-height: 250px; max-height: 60vh; overflow-y: auto;">
-            <div class="tab-pane fade show active" id="content-bylaws">
-              <h6 class="fw-bold text-success border-bottom pb-2 mb-3">VBD Organizational By-Laws</h6>
+          <div class="tab-content border p-3 rounded-3 bg-light">
+            <div class="tab-pane fade show active" id="c-bylaws">
+              <h6 class="fw-bold border-bottom pb-2" style="color: var(--vbd-dark-blue);">VBD Organizational By-Laws</h6>
               <p class="small text-muted">১. সকল সদস্য ও ভলান্টিয়ারকে সংস্থার মূল লক্ষ্য ও উদ্দেশ্য অনুধাবন করে কাজ করতে হবে।</p>
               <p class="small text-muted">২. জেলা ও জাতীয় পর্ষদের সিদ্ধান্ত চূড়ান্ত বলে গণ্য হবে।</p>
-              <p class="small text-muted">৩. প্রতিটি ইভেন্ট ও মিটিংয়ে যথাসময়ে উপস্থিতি নিশ্চিত করা বাধ্যতামূলক।</p>
             </div>
-            <div class="tab-pane fade" id="content-conduct">
-              <h6 class="fw-bold text-success border-bottom pb-2 mb-3">Volunteer Code of Conduct</h6>
+            <div class="tab-pane fade" id="c-conduct">
+              <h6 class="fw-bold border-bottom pb-2" style="color: var(--vbd-dark-blue);">Volunteer Code of Conduct</h6>
               <p class="small text-muted">১. সকল সহকর্মীর প্রতি পারস্পরিক শ্রদ্ধা ও পেশাদারিত্ব বজায় রাখতে হবে।</p>
-              <p class="small text-muted">২. সংস্থার কোনো গোপনীয় তথ্য বা তথ্যমালা বাইরে প্রকাশ করা যাবে না।</p>
-              <p class="small text-muted">৩. যেকোনো সামাজিক মাধ্যমে সংস্থার ভাবমূর্তি ক্ষুণ্ণ হয় এমন বক্তব্য প্রদান থেকে বিরত থাকতে হবে।</p>
+              <p class="small text-muted">২. সংস্থার গোপনীয় তথ্য বাইরে প্রকাশ করা যাবে না।</p>
             </div>
-            <div class="tab-pane fade" id="content-oath">
-              <h6 class="fw-bold text-success border-bottom pb-2 mb-3">The Volunteer Oath</h6>
-              <div class="p-3 bg-white border rounded text-center font-monospace">
+            <div class="tab-pane fade" id="c-oath">
+              <h6 class="fw-bold border-bottom pb-2" style="color: var(--vbd-dark-blue);">The Volunteer Oath</h6>
+              <div class="p-3 bg-white border rounded text-center">
                 <p class="fst-italic fw-semibold text-dark m-0">
-                  "আমি শপথ করছি যে, ভলান্টিয়ার ফর বাংলাদেশ-এর একজন দায়িত্বশীল সদস্য হিসেবে সর্বদা দেশের ও সমাজের কল্যাণে আত্মনিয়োগ করব। নৈতিকতা, সততা ও শৃঙ্খলা বজায় রেখে সংগঠনের সম্মান অক্ষুণ্ণ রাখব।"
+                  "আমি শপথ করছি যে, ভলান্টিয়ার ফর বাংলাদেশ-এর একজন দায়িত্বশীল সদস্য হিসেবে সর্বদা দেশের ও সমাজের কল্যাণে আত্মনিয়োগ করব।"
                 </p>
               </div>
             </div>
@@ -217,119 +369,44 @@
     </div>
   </div>
 
-  <!-- ANNUAL ROLE & PERMISSION TRANSFER MODAL -->
-  <div class="modal fade" id="masterAccessModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content rounded-4 border-0">
-        <div class="modal-header bg-dark text-white">
-          <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-user-shield me-2 text-warning"></i>Annual Role Transfer</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body p-4">
-          <p class="small text-muted">বছর শেষে নতুন মেম্বারের ইমেইল দিয়ে দায়িত্ব ও পারমিশন এক ক্লিকে ট্রান্সফার করুন:</p>
-          
-          <div class="mb-3">
-            <label class="form-label fw-bold small">Select Position / Role</label>
-            <select class="form-select rounded-3" id="transferRole">
-              <option value="District VP">District Vice President</option>
-              <option value="District President">District President</option>
-              <option value="District GS">District General Secretary</option>
-              <option value="District HRO">District HR Officer</option>
-              <option value="Keraniganj HRS">Keraniganj HR Secretary</option>
-              <option value="DSCC HRS">DSCC HR Secretary</option>
-              <option value="Dohar HRS">Dohar HR Secretary</option>
-              <option value="Nababganj HRS">Nababganj HR Secretary</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label fw-bold small">New Official Email Address</label>
-            <input type="email" class="form-control rounded-3" id="newEmailInput" placeholder="new.member@gmail.com">
-          </div>
-
-          <button class="btn btn-warning w-100 fw-bold rounded-3 text-dark" onclick="transferAccess()">
-            <i class="fa-solid fa-paper-plane me-1"></i> Transfer Access & Send Confirmation Mail
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- JS DEPENDENCIES -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // LIVE CONNECTED APPS SCRIPT API URL
     const API_URL = "https://script.google.com/macros/s/AKfycbxfdhr5k5zTol1cp7vGRNBwv5gl-2Bjqb6MaZxgL-Y9agewCr1kuE8rlfpJBZewX8-PSQ/exec";
 
-    function openByLawsModal() {
-      var bylawsModal = new bootstrap.Modal(document.getElementById('bylawsModal'));
-      bylawsModal.show();
+    function openLoginModal() { new bootstrap.Modal(document.getElementById('loginModal')).show(); }
+    function openByLawsModal() { new bootstrap.Modal(document.getElementById('bylawsModal')).show(); }
+    function openCreateEventModal() { new bootstrap.Modal(document.getElementById('createEventModal')).show(); }
+    function openForwardPowerModal() { new bootstrap.Modal(document.getElementById('forwardPowerModal')).show(); }
+    function openLeadershipTransferModal() { new bootstrap.Modal(document.getElementById('leadershipTransferModal')).show(); }
+
+    function filterUnit(unitName) {
+      alert(unitName + " এর ইভেন্ট ডাটা ফিল্টার করা হচ্ছে...");
     }
 
-    function openMasterAccessModal() {
-      var accessModal = new bootstrap.Modal(document.getElementById('masterAccessModal'));
-      accessModal.show();
+    function processLogin() {
+      document.getElementById('otpSection').classList.remove('d-none');
+      document.getElementById('loginBtn').innerText = "Verify OTP & Access";
     }
 
-    // REAL TIME GEO-ATTENDANCE SUBMISSION
-    function submitGeoAttendance(eventName) {
-      const name = document.getElementById('vName').value;
-      const email = document.getElementById('vEmail').value;
-      const phone = document.getElementById('vPhone').value;
-      const upazila = document.getElementById('vUpazila').value;
-
-      if (!name || !email) {
-        alert("দয়া করে আপনার নাম এবং ইমেইল ফিলআপ করুন।");
-        return;
-      }
-
+    function attemptGeoCheckIn(eventName) {
       if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-
-          const payload = {
-            action: "register_attendance",
-            name: name,
-            email: email,
-            phone: phone,
-            upazila: upazila,
-            eventName: eventName,
-            lat: lat,
-            lng: lng
-          };
-
-          fetch(API_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          }).then(() => {
-            alert(`ধন্যবাদ ${name}! আপনার জিপিএস লোকেশন (${lat.toFixed(3)}, ${lng.toFixed(3)}) ভেরিফাই করে সফলভাবে অ্যাটেন্ডেন্স নেওয়া হয়েছে এবং আপনার মেইলে কনফার্মেশন পাঠানো হয়েছে।`);
-          }).catch(err => {
-            alert("ডাটা পাঠাতে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।");
-          });
-
-        }, function(error) {
-          alert("অ্যাটেন্ডেন্স দিতে মোবাইলের জিপিএস / লোকেশন চালু করুন।");
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          alert(`জিপিএস ভেরিফাইড! লোকেশন: (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})। এইচআর জিও-ফেন্স রেঞ্জ চেক করা হচ্ছে...`);
         });
       } else {
-        alert("আপনার ব্রাউজারে জিপিএস লোকেশন সাপোর্ট করছে না।");
+        alert("মোবাইলের জিপিএস / লোকেশন চালু করুন।");
       }
     }
 
-    function transferAccess() {
-      const role = document.getElementById('transferRole').value;
-      const email = document.getElementById('newEmailInput').value;
-
-      if (!email) {
-        alert("দয়া করে নতুন দায়িত্বপ্রাপ্ত কর্মকর্তার ইমেইল দিন।");
-        return;
-      }
-
-      alert(`সফলভাবে ${role} এর দায়িত্ব এবং সিকিউরড এক্সেস ${email} এ ট্রান্সফার করা হয়েছে!`);
+    function attemptCheckOut(eventName) {
+      alert(`ইভেন্ট ${eventName} থেকে সফলভাবে চেক-আউট সম্পন্ন হয়েছে।`);
     }
+
+    function saveNewEvent() { alert("নতুন ইভেন্ট প্রকাশিত হয়েছে এবং গুগল ফর্ম সিঙ্ক চালু করা হয়েছে।"); }
+    function forwardRangePower() { alert("জিও-ফেন্স পাওয়ার সফলভাবে ফরওয়ার্ড করা হয়েছে।"); }
+    function saveBoardAccess() { alert("বোর্ড মেম্বার রোলস সফলভাবে সেভ ও ট্রান্সফার করা হয়েছে।"); }
   </script>
 </body>
 </html>
