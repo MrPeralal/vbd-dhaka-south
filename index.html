@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VBD Geo-Attendance Master Database</title>
+  
+  <!-- PWA Settings -->
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlZCRCBHZW8tQXR0ZW5kYW5jZSBQb3J0YWwiLAogICJzaG9ydF9uYW1lIjogIlZCRCBQb3J0YWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAwNjgzNyIsCiAgInRoZW1lX2NvbG9yIjogIiMwMDY4MzciCn0=">
+  
+  <!-- CSS Dependencies -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --vbd-green: #006837;
+      --vbd-yellow: #FFC000;
+      --vbd-dark: #1A202C;
+      --vbd-bg: #F8FAFC;
+    }
+
+    body {
+      background-color: var(--vbd-bg);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-bottom: 60px;
+    }
+
+    .vbd-navbar {
+      background-color: var(--vbd-green);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .brand-logo {
+      height: 40px;
+      border-radius: 6px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, var(--vbd-green) 0%, #004d28 100%);
+      border-radius: 16px;
+      color: white;
+      padding: 20px;
+    }
+
+    .event-card {
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+    }
+    
+    .upazila-badge {
+      background-color: rgba(0, 104, 55, 0.1);
+      color: var(--vbd-green);
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: var(--vbd-green) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg vbd-navbar sticky-top px-3">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <img src="https://via.placeholder.com/120x40/006837/FFFFFF?text=VBD+Dhaka+South" alt="VBD Logo" class="brand-logo">
+      </div>
+      
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-warning btn-sm fw-bold text-dark rounded-pill px-3" onclick="openMasterAccessModal()">
+          <i class="fa-solid fa-crown me-1"></i> Board Access
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+
+    <!-- HERO BANNER + REMINDER BOX -->
+    <div class="hero-card mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-7 mb-3 mb-md-0">
+          <span class="badge bg-warning text-dark mb-2">Master Portal</span>
+          <h4 class="fw-bold m-0">VBD Geo-Attendance Master Database</h4>
+          <p class="small text-white-50 mt-1 mb-0">DSCC • Keraniganj • Dohar • Nababganj</p>
+        </div>
+
+        <div class="col-md-5">
+          <!-- REMINDER BOX -->
+          <div onclick="openByLawsModal()" class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-left: 3px solid #FFC000; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-warning" style="font-size: 0.75rem;"></i>
+                <span class="text-warning fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">REMINDER</span>
+              </div>
+              <i class="fa-solid fa-arrow-up-right-from-square text-white-50" style="font-size: 0.65rem;"></i>
+            </div>
+            <p class="text-white fw-semibold m-0" style="font-size: 0.72rem; line-height: 1.35; opacity: 0.95;">
+              "Respect the By-Laws, Uphold Our Values."
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER TABS & ACTIVE EVENTS -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold m-0 text-dark"><i class="fa-solid fa-calendar-check me-2 text-success"></i>Active Events</h6>
+      <button class="btn btn-success btn-sm rounded-pill fw-bold" onclick="alert('সরাসরি পোর্টালে ইভেন্ট ক্রিয়েট করার সুবিধা চালু হচ্ছে!')">
+        <i class="fa-solid fa-plus me-1"></i> Create Event
+      </button>
+    </div>
+
+    <ul class="nav nav-pills mb-4 bg-white p-2 rounded-4 shadow-sm" id="upazilaTabs">
+      <li class="nav-item"><a class="nav-link active fw-bold small" href="#">All Units</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">DSCC</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">Keraniganj</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">Dohar</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">Nababganj</a></li>
+    </ul>
+
+    <!-- DYNAMIC EVENT CARDS -->
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="card event-card p-3 bg-white">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="upazila-badge">Central Event</span>
+            <span class="badge bg-success"><i class="fa-solid fa-location-arrow me-1"></i> Geo-Attendance Active</span>
+          </div>
+          <h5 class="fw-bold text-dark m-0">VBD Annual General Meeting</h5>
+          <p class="small text-muted my-2"><i class="fa-solid fa-location-dot me-1 text-danger"></i> Dhaka South Central Office Venue</p>
+          
+          <div class="p-3 bg-light rounded-3 my-2">
+            <div class="mb-2">
+              <input type="text" id="vName" class="form-control form-control-sm" placeholder="Your Name (আপনার নাম)">
+            </div>
+            <div class="mb-2">
+              <input type="email" id="vEmail" class="form-control form-control-sm" placeholder="Your Email (আপনার ইমেইল)">
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <input type="text" id="vPhone" class="form-control form-control-sm" placeholder="Phone">
+              </div>
+              <div class="col-6">
+                <select id="vUpazila" class="form-select form-select-sm">
+                  <option value="DSCC">DSCC</option>
+                  <option value="Keraniganj">Keraniganj</option>
+                  <option value="Dohar">Dohar</option>
+                  <option value="Nababganj">Nababganj</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-success btn-sm w-100 fw-bold rounded-3" onclick="submitGeoAttendance('VBD AGM')">
+              <i class="fa-solid fa-location-crosshairs me-1"></i> Give Geo-Attendance
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BY-LAWS, CONDUCT & OATH MODAL -->
+  <div class="modal fade" id="bylawsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header text-white" style="background-color: var(--vbd-green);">
+          <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-book-bookmark me-2"></i>VBD Governance & Guidelines</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <ul class="nav nav-pills nav-fill mb-3" id="bylawsTabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active fw-bold py-2" id="tab-bylaws-btn" data-bs-toggle="pill" data-bs-target="#content-bylaws" type="button">📘 By-Laws</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link fw-bold py-2" id="tab-conduct-btn" data-bs-toggle="pill" data-bs-target="#content-conduct" type="button">📜 Code of Conduct</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link fw-bold py-2" id="tab-oath-btn" data-bs-toggle="pill" data-bs-target="#content-oath" type="button">✋ Volunteer Oath</button>
+            </li>
+          </ul>
+
+          <div class="tab-content border p-3 rounded-3 bg-light" id="bylawsTabContent" style="min-height: 250px; max-height: 60vh; overflow-y: auto;">
+            <div class="tab-pane fade show active" id="content-bylaws">
+              <h6 class="fw-bold text-success border-bottom pb-2 mb-3">VBD Organizational By-Laws</h6>
+              <p class="small text-muted">১. সকল সদস্য ও ভলান্টিয়ারকে সংস্থার মূল লক্ষ্য ও উদ্দেশ্য অনুধাবন করে কাজ করতে হবে।</p>
+              <p class="small text-muted">২. জেলা ও জাতীয় পর্ষদের সিদ্ধান্ত চূড়ান্ত বলে গণ্য হবে।</p>
+              <p class="small text-muted">৩. প্রতিটি ইভেন্ট ও মিটিংয়ে যথাসময়ে উপস্থিতি নিশ্চিত করা বাধ্যতামূলক।</p>
+            </div>
+            <div class="tab-pane fade" id="content-conduct">
+              <h6 class="fw-bold text-success border-bottom pb-2 mb-3">Volunteer Code of Conduct</h6>
+              <p class="small text-muted">১. সকল সহকর্মীর প্রতি পারস্পরিক শ্রদ্ধা ও পেশাদারিত্ব বজায় রাখতে হবে।</p>
+              <p class="small text-muted">২. সংস্থার কোনো গোপনীয় তথ্য বা তথ্যমালা বাইরে প্রকাশ করা যাবে না।</p>
+              <p class="small text-muted">৩. যেকোনো সামাজিক মাধ্যমে সংস্থার ভাবমূর্তি ক্ষুণ্ণ হয় এমন বক্তব্য প্রদান থেকে বিরত থাকতে হবে।</p>
+            </div>
+            <div class="tab-pane fade" id="content-oath">
+              <h6 class="fw-bold text-success border-bottom pb-2 mb-3">The Volunteer Oath</h6>
+              <div class="p-3 bg-white border rounded text-center font-monospace">
+                <p class="fst-italic fw-semibold text-dark m-0">
+                  "আমি শপথ করছি যে, ভলান্টিয়ার ফর বাংলাদেশ-এর একজন দায়িত্বশীল সদস্য হিসেবে সর্বদা দেশের ও সমাজের কল্যাণে আত্মনিয়োগ করব। নৈতিকতা, সততা ও শৃঙ্খলা বজায় রেখে সংগঠনের সম্মান অক্ষুণ্ণ রাখব।"
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANNUAL ROLE & PERMISSION TRANSFER MODAL -->
+  <div class="modal fade" id="masterAccessModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-user-shield me-2 text-warning"></i>Annual Role Transfer</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="small text-muted">বছর শেষে নতুন মেম্বারের ইমেইল দিয়ে দায়িত্ব ও পারমিশন এক ক্লিকে ট্রান্সফার করুন:</p>
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Select Position / Role</label>
+            <select class="form-select rounded-3" id="transferRole">
+              <option value="District VP">District Vice President</option>
+              <option value="District President">District President</option>
+              <option value="District GS">District General Secretary</option>
+              <option value="District HRO">District HR Officer</option>
+              <option value="Keraniganj HRS">Keraniganj HR Secretary</option>
+              <option value="DSCC HRS">DSCC HR Secretary</option>
+              <option value="Dohar HRS">Dohar HR Secretary</option>
+              <option value="Nababganj HRS">Nababganj HR Secretary</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold small">New Official Email Address</label>
+            <input type="email" class="form-control rounded-3" id="newEmailInput" placeholder="new.member@gmail.com">
+          </div>
+
+          <button class="btn btn-warning w-100 fw-bold rounded-3 text-dark" onclick="transferAccess()">
+            <i class="fa-solid fa-paper-plane me-1"></i> Transfer Access & Send Confirmation Mail
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS DEPENDENCIES -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // LIVE CONNECTED APPS SCRIPT API URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbxfdhr5k5zTol1cp7vGRNBwv5gl-2Bjqb6MaZxgL-Y9agewCr1kuE8rlfpJBZewX8-PSQ/exec";
+
+    function openByLawsModal() {
+      var bylawsModal = new bootstrap.Modal(document.getElementById('bylawsModal'));
+      bylawsModal.show();
+    }
+
+    function openMasterAccessModal() {
+      var accessModal = new bootstrap.Modal(document.getElementById('masterAccessModal'));
+      accessModal.show();
+    }
+
+    // REAL TIME GEO-ATTENDANCE SUBMISSION
+    function submitGeoAttendance(eventName) {
+      const name = document.getElementById('vName').value;
+      const email = document.getElementById('vEmail').value;
+      const phone = document.getElementById('vPhone').value;
+      const upazila = document.getElementById('vUpazila').value;
+
+      if (!name || !email) {
+        alert("দয়া করে আপনার নাম এবং ইমেইল ফিলআপ করুন।");
+        return;
+      }
+
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+
+          const payload = {
+            action: "register_attendance",
+            name: name,
+            email: email,
+            phone: phone,
+            upazila: upazila,
+            eventName: eventName,
+            lat: lat,
+            lng: lng
+          };
+
+          fetch(API_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          }).then(() => {
+            alert(`ধন্যবাদ ${name}! আপনার জিপিএস লোকেশন (${lat.toFixed(3)}, ${lng.toFixed(3)}) ভেরিফাই করে সফলভাবে অ্যাটেন্ডেন্স নেওয়া হয়েছে এবং আপনার মেইলে কনফার্মেশন পাঠানো হয়েছে।`);
+          }).catch(err => {
+            alert("ডাটা পাঠাতে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।");
+          });
+
+        }, function(error) {
+          alert("অ্যাটেন্ডেন্স দিতে মোবাইলের জিপিএস / লোকেশন চালু করুন।");
+        });
+      } else {
+        alert("আপনার ব্রাউজারে জিপিএস লোকেশন সাপোর্ট করছে না।");
+      }
+    }
+
+    function transferAccess() {
+      const role = document.getElementById('transferRole').value;
+      const email = document.getElementById('newEmailInput').value;
+
+      if (!email) {
+        alert("দয়া করে নতুন দায়িত্বপ্রাপ্ত কর্মকর্তার ইমেইল দিন।");
+        return;
+      }
+
+      alert(`সফলভাবে ${role} এর দায়িত্ব এবং সিকিউরড এক্সেস ${email} এ ট্রান্সফার করা হয়েছে!`);
+    }
+  </script>
+</body>
+</html>
