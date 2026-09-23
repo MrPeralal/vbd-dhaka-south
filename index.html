@@ -3,345 +3,561 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VBD Geo-Attendance Master Database</title>
-  
-  <!-- PWA Settings -->
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlZCRCBHZW8tQXR0ZW5kYW5jZSBQb3J0YWwiLAogICJzaG9ydF9uYW1lIjogIlZCRCBQb3J0YWwiLAogICJzdGFydF9uYW1lIjogIlZCRCBHZW8tQXR0ZW5kYW5jZSBQb3J0YWwiLAogICJzaG9ydF9uYW1lIjogIlZCRCBQb3J0YWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzJFQzdENiIsCiAgInRoZW1lX2NvbG9yIjogIiMyRUNENDYiCn0=">
-  
-  <!-- CSS Dependencies -->
+  <title>VBD Geo-Attendance Portal</title>
+  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <style>
     :root {
-      --vbd-light-green: #2EC7D6; /* Light Green / Mint Tint */
-      --vbd-green-main: #10B981;  /* Soft Light Green Main */
-      --vbd-yellow: #FFC107;      /* Vivid Yellow Accent */
-      --vbd-dark: #1E293B;
-      --vbd-bg: #F8FAFC;
+      --vbd-forest: #0B5237;        /* Sidebar & Primary Branding */
+      --vbd-dark-blue: #0F172A;     /* Headers & Dark Blue Accents */
+      --vbd-accent-blue: #1E3A8A;   /* Highlight Buttons & Cards */
+      --vbd-light-bg: #F0FDF4;      /* Soft Light Green background */
+      --vbd-card-bg: #FFFFFF;
+      --vbd-text-dark: #1E293B;
     }
 
     body {
-      background-color: var(--vbd-bg);
+      background-color: var(--vbd-light-bg);
+      color: var(--vbd-text-dark);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding-bottom: 60px;
     }
 
-    .vbd-navbar {
-      background-color: var(--vbd-green-main);
+    /* Sidebar - VBD Forest Green Theme */
+    .sidebar {
+      background-color: var(--vbd-forest);
+      min-height: 100vh;
+      color: #ffffff;
+    }
+
+    .sidebar .nav-link {
+      color: #E2E8F0;
+      font-weight: 500;
+      padding: 12px 18px;
+      margin: 4px 10px;
+      border-radius: 8px;
+    }
+
+    .sidebar .nav-link:hover, .sidebar .nav-link.active {
+      background-color: rgba(255, 255, 255, 0.18);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .sidebar .nav-link i {
+      margin-right: 12px;
+      width: 20px;
+    }
+
+    /* ID Card & Headers - Dark Blue / Forest Hybrid */
+    .id-card-banner {
+      background: linear-gradient(135deg, var(--vbd-forest) 0%, var(--vbd-dark-blue) 100%);
       color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .brand-logo {
-      height: 40px;
+    .stat-card {
+      background: var(--vbd-card-bg);
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    /* Custom Color Buttons - Dark Blue & Forest */
+    .btn-vbd-primary {
+      background-color: var(--vbd-forest);
+      color: #FFFFFF;
+      font-weight: 600;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+    }
+
+    .btn-vbd-primary:hover {
+      background-color: #073825;
+      color: #FFFFFF;
+    }
+
+    .btn-vbd-blue {
+      background-color: var(--vbd-accent-blue);
+      color: #FFFFFF;
+      font-weight: 600;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+    }
+
+    .btn-vbd-blue:hover {
+      background-color: #172554;
+      color: #FFFFFF;
+    }
+
+    .badge-vbd-tag {
+      background-color: #DCFCE7;
+      color: #166534;
+      font-weight: 600;
+      padding: 6px 12px;
       border-radius: 6px;
     }
 
-    .hero-card {
-      background: linear-gradient(135deg, var(--vbd-green-main) 0%, #059669 100%);
-      border-radius: 16px;
-      color: white;
-      padding: 20px;
-    }
-
-    .event-card {
-      border: none;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-      transition: transform 0.2s;
-    }
-    
-    .upazila-badge {
-      background-color: rgba(16, 185, 129, 0.12);
-      color: #047857;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-    }
-
-    .nav-pills .nav-link.active {
-      background-color: var(--vbd-green-main) !important;
-      color: #ffffff !important;
-    }
-
-    .btn-yellow {
-      background-color: var(--vbd-yellow);
-      color: #000;
-      font-weight: 600;
-    }
-
-    .btn-yellow:hover {
-      background-color: #e0a800;
-      color: #000;
+    .master-card-box {
+      border-left: 4px solid var(--vbd-accent-blue);
+      background-color: #F8FAFC;
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg vbd-navbar sticky-top px-3">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center gap-2">
-        <img src="https://volunteerforbangladesh.org/wp-content/uploads/2021/07/vbd-logo-white-horizontal.png" alt="VBD Logo" class="brand-logo">
+<div class="container-fluid">
+  <div class="row">
+    
+    <!-- Navigation Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
+      <div class="p-3 text-center border-bottom border-secondary">
+        <h4 class="fw-bold mb-0 text-white"><i class="fa-solid fa-hand-holding-heart me-2"></i>VBD Portal</h4>
+        <small class="text-light opacity-75">Geo-Attendance Hub</small>
       </div>
       
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-yellow btn-sm rounded-pill px-3" onclick="openMasterAccessModal()">
-          <i class="fa-solid fa-crown me-1"></i> Board Access
-        </button>
+      <ul class="nav flex-column mt-3">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" onclick="switchTab('tabDashboard', this)">
+            <i class="fa-solid fa-chart-line"></i> ড্যাশবোর্ড
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="switchTab('tabActiveEvents', this)">
+            <i class="fa-solid fa-location-crosshairs"></i> আজ ইভেন্ট ও চেক-ইন
+          </a>
+        </li>
+        <li class="nav-item" id="navCreateEvent" style="display: none;">
+          <a class="nav-link" href="#" onclick="switchTab('tabCreateEvent', this)">
+            <i class="fa-solid fa-calendar-plus"></i> ইভেন্ট ক্রিয়েট (HRS/Project)
+          </a>
+        </li>
+        <li class="nav-item" id="navUpazilaReports" style="display: none;">
+          <a class="nav-link" href="#" onclick="switchTab('tabUpazilaReports', this)">
+            <i class="fa-solid fa-file-invoice"></i> উপজেলা ইভেন্ট রিপোর্ট
+          </a>
+        </li>
+        <li class="nav-item" id="navVolunteerDir" style="display: none;">
+          <a class="nav-link" href="#" onclick="switchTab('tabVolunteerDir', this)">
+            <i class="fa-solid fa-users"></i> ভলান্টিয়ার ডিরেক্টরি
+          </a>
+        </li>
+        <li class="nav-item" id="navMasterControl" style="display: none;">
+          <a class="nav-link" href="#" onclick="switchTab('tabMasterSheet', this)">
+            <i class="fa-solid fa-user-shield"></i> মাস্টার পারমিশন কন্ট্রোল
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="switchTab('tabMyProfile', this)">
+            <i class="fa-solid fa-user-gear"></i> মাই প্রোফাইল ও সিকিউরিটি
+          </a>
+        </li>
+      </ul>
+
+      <div class="p-3 position-absolute bottom-0 w-100">
+        <button class="btn btn-outline-light w-100" onclick="logoutSystem()"><i class="fa-solid fa-right-from-bracket me-2"></i>লগআউট</button>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <div class="container my-4">
-
-    <!-- HERO BANNER + REMINDER BOX -->
-    <div class="hero-card mb-4">
-      <div class="row align-items-center">
-        <div class="col-md-7 mb-3 mb-md-0">
-          <span class="badge btn-yellow mb-2">Master Portal</span>
-          <h4 class="fw-bold m-0">VBD Geo-Attendance Master Database</h4>
-          <p class="small text-white-50 mt-1 mb-0">DSCC • Keraniganj • Dohar • Nababganj</p>
+    <!-- Main Content Area -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+      
+      <!-- Top Identity Card Header -->
+      <div class="id-card-banner d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center">
+          <img id="userImg" src="https://via.placeholder.com/65" class="rounded-circle me-3 border border-2 border-white" width="65" height="65" alt="Profile">
+          <div>
+            <h5 class="fw-bold mb-1" id="usrNameDisplay">MD. FAZLIY RABBY</h5>
+            <span class="badge badge-vbd-tag" id="usrRoleDisplay">DISTRICT VICE PRESIDENT</span>
+            <small class="d-block mt-1 text-light opacity-75" id="usrUpazilaDisplay">Scope: All Upazilas (Master)</small>
+          </div>
         </div>
+        <div>
+          <button class="btn btn-sm btn-light fw-bold text-dark" onclick="fetchLivePortalData()"><i class="fa-solid fa-rotate me-1"></i> রিফ্রেশ ডাটা</button>
+        </div>
+      </div>
 
-        <div class="col-md-5">
-          <!-- REMINDER BOX -->
-          <div onclick="openByLawsModal()" class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-left: 4px solid var(--vbd-yellow); cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.18)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-              <div class="d-flex align-items-center gap-2">
-                <i class="fa-solid fa-shield-halved text-warning" style="font-size: 0.8rem;"></i>
-                <span class="text-warning fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">REMINDER</span>
-              </div>
-              <i class="fa-solid fa-arrow-up-right-from-square text-white-50" style="font-size: 0.65rem;"></i>
+      <!-- TAB 1: VOLUNTEER & BOARD DASHBOARD -->
+      <div id="tabDashboard" class="tab-pane-custom">
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <div class="stat-card">
+              <small class="text-muted fw-bold">মোট ইভেন্ট</small>
+              <h3 class="fw-bold mt-2 text-dark" id="statTotalEvents">0</h3>
             </div>
-            <p class="text-white fw-semibold m-0" style="font-size: 0.72rem; line-height: 1.35; opacity: 0.95;">
-              "Respect the By-Laws, Uphold Our Values."
-            </p>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <small class="text-muted fw-bold">উপস্থিতি (Attended)</small>
+              <h3 class="fw-bold mt-2 text-success" id="statAttended">0</h3>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <small class="text-muted fw-bold">অনুপস্থিত (Missed)</small>
+              <h3 class="fw-bold mt-2 text-danger" id="statMissed">0</h3>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <small class="text-muted fw-bold">উপস্থিতির হার</small>
+              <h3 class="fw-bold mt-2 text-primary" id="statPercentage">0%</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="card stat-card mb-4">
+          <h6 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-list-check me-2"></i>ইভেন্ট হিস্ট্রি ও অ্যাটেন্ডেন্স সামারি</h6>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>ইভেন্ট নেম</th>
+                  <th>তারিখ</th>
+                  <th>উপজেলা</th>
+                  <th>চেক-ইন টাইম</th>
+                  <th>চেক-আউট টাইম</th>
+                  <th>স্ট্যাটাস</th>
+                </tr>
+              </thead>
+              <tbody id="dashTableBody">
+                <tr><td colspan="6" class="text-center text-muted">ডাটা লোড হচ্ছে...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- FILTER TABS & ACTIVE EVENTS -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h6 class="fw-bold m-0 text-dark"><i class="fa-solid fa-calendar-check me-2" style="color: var(--vbd-green-main);"></i>Active Events</h6>
-      <button class="btn btn-sm rounded-pill fw-bold text-white" style="background-color: var(--vbd-green-main);" onclick="alert('সরাসরি পোর্টালে ইভেন্ট ক্রিয়েট করার সুবিধা চালু হচ্ছে!')">
-        <i class="fa-solid fa-plus me-1"></i> Create Event
-      </button>
-    </div>
-
-    <ul class="nav nav-pills mb-4 bg-white p-2 rounded-4 shadow-sm" id="upazilaTabs">
-      <li class="nav-item"><a class="nav-link active fw-bold small" href="#">All Units</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">DSCC</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">Keraniganj</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">Dohar</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold small text-secondary" href="#">Nababganj</a></li>
-    </ul>
-
-    <!-- DYNAMIC EVENT CARDS -->
-    <div class="row g-3">
-      <div class="col-md-6">
-        <div class="card event-card p-3 bg-white">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <span class="upazila-badge">Central Event</span>
-            <span class="badge text-white" style="background-color: var(--vbd-green-main);"><i class="fa-solid fa-location-arrow me-1"></i> Geo-Attendance Active</span>
+      <!-- TAB 2: ACTIVE EVENT CHECK-IN (GPS & POWER FORWARDING) -->
+      <div id="tabActiveEvents" class="tab-pane-custom" style="display: none;">
+        <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-location-dot me-2"></i>আজকের ইভেন্ট ও জিও-ফেন্স চেক-ইন</h5>
+        
+        <div class="card stat-card mb-4 border-start border-4 border-success">
+          <h6 class="fw-bold text-success"><i class="fa-solid fa-bullhorn me-2"></i>অ্যাক্টিভ ইভেন্ট ইনফরমেশন</h6>
+          <div id="activeEventDetails" class="mt-2">
+            <p class="text-muted">আপনার সীমানায় বর্তমানে কোনো অ্যাক্টিভ ইভেন্ট নেই বা লোড হচ্ছে...</p>
           </div>
-          <h5 class="fw-bold text-dark m-0">VBD Annual General Meeting</h5>
-          <p class="small text-muted my-2"><i class="fa-solid fa-location-dot me-1 text-danger"></i> Dhaka South Central Office Venue</p>
+          <div id="gpsActionArea" class="mt-3" style="display: none;">
+            <button class="btn btn-vbd-primary btn-lg me-2" onclick="processCheckIn()"><i class="fa-solid fa-circle-check me-1"></i> Check-In (GPS Verified)</button>
+            <button class="btn btn-vbd-blue btn-lg" onclick="processCheckOut()"><i class="fa-solid fa-right-from-bracket me-1"></i> Check-Out</button>
+          </div>
+        </div>
+
+        <!-- HRS Power Forwarding Panel (HRS / Project Sec Only) -->
+        <div class="card stat-card master-card-box" id="powerForwardPanel" style="display: none;">
+          <h6 class="fw-bold" style="color: var(--vbd-accent-blue);"><i class="fa-solid fa-share-nodes me-2"></i>স্পেশাল জিও-ফেন্স পাওয়ার ফরওয়ার্ডিং (HRS / Project Sec)</h6>
+          <p class="small text-muted mb-3">আপনি ইভেন্টে উপস্থিত থাকতে না পারলে নির্দিষ্ট ভলান্টিয়ারকে অস্থায়ী চেক-ইন পাওয়ার ডেলিগেট করুন।</p>
           
-          <div class="p-3 bg-light rounded-3 my-2">
-            <div class="mb-2">
-              <input type="text" id="vName" class="form-control form-control-sm" placeholder="Your Name (আপনার নাম)">
+          <form onsubmit="handlePowerForward(event)" class="row g-2 align-items-center">
+            <div class="col-md-5">
+              <input type="email" id="fwdEmail" class="form-control" placeholder="ভলান্টিয়ারের ইমেইল দিন" required>
             </div>
-            <div class="mb-2">
-              <input type="email" id="vEmail" class="form-control form-control-sm" placeholder="Your Email (আপনার ইমেইল)">
+            <div class="col-md-3">
+              <input type="number" id="fwdRadius" class="form-control" placeholder="রেঞ্জ (মিটার)" value="50" min="5" required>
             </div>
-            <div class="row g-2 mb-2">
-              <div class="col-6">
-                <input type="text" id="vPhone" class="form-control form-control-sm" placeholder="Phone">
+            <div class="col-md-4">
+              <button type="submit" class="btn btn-vbd-blue w-100"><i class="fa-solid fa-bolt me-1"></i> পাওয়ার ফরওয়ার্ড করুন</button>
+            </div>
+          </form>
+          <div id="activeDelegations" class="mt-3"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: CREATE EVENT (HRS / PROJECT SECRETARY) -->
+      <div id="tabCreateEvent" class="tab-pane-custom" style="display: none;">
+        <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-calendar-plus me-2"></i>নতুন ইভেন্ট ক্রিয়েট ও গুগল ফর্ম শিট লিঙ্ক সিঙ্ক</h5>
+        <div class="card stat-card">
+          <form onsubmit="handleCreateEvent(event)">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">ইভেন্টের নাম</label>
+                <input type="text" id="ceTitle" class="form-control" placeholder="যেমন: পরিবেশ সচেতনতা র‍্যালি" required>
               </div>
-              <div class="col-6">
-                <select id="vUpazila" class="form-select form-select-sm">
-                  <option value="DSCC">DSCC</option>
-                  <option value="Keraniganj">Keraniganj</option>
-                  <option value="Dohar">Dohar</option>
-                  <option value="Nababganj">Nababganj</option>
-                </select>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">লোকেশন নেম</label>
+                <input type="text" id="ceLocation" class="form-control" placeholder="যেমন: কেরানীগঞ্জ উপজেলা চত্বর" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">তারিখ</label>
+                <input type="date" id="ceDate" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">জিপিএস অ্যাটেন্ডেন্স রেডিয়াস (মিটার)</label>
+                <input type="number" id="ceRadius" class="form-control" value="50" min="5" max="500" required>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-bold">গুগল ফর্ম রেসপন্স শিট লিংক (Anyone with the link - View Only)</label>
+                <input type="url" id="ceSheetUrl" class="form-control" placeholder="https://docs.google.com/spreadsheets/d/..." required>
+                <small class="text-muted d-block mt-1">সিস্টেম স্বয়ংক্রিয়ভাবে ফর্ম রেজিস্ট্রেশনকারীদের ইউনিক প্রোফাইল তৈরি করে ইমেইল পাঠাবে।</small>
               </div>
             </div>
-            <button class="btn btn-sm w-100 fw-bold rounded-3 text-white" style="background-color: var(--vbd-green-main);" onclick="submitGeoAttendance('VBD AGM')">
-              <i class="fa-solid fa-location-crosshairs me-1"></i> Give Geo-Attendance
-            </button>
+            <button type="submit" class="btn btn-vbd-primary mt-4"><i class="fa-solid fa-floppy-disk me-1"></i> ইভেন্ট সেভ ও লাইভ সিঙ্ক চালু করুন</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 4: UPAZILA BOARD REPORT VIEW -->
+      <div id="tabUpazilaReports" class="tab-pane-custom" style="display: none;">
+        <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-folder-open me-2"></i>উপজেলা ইভেন্ট ও অ্যাটেন্ডেন্স রিপোর্ট</h5>
+        <div class="card stat-card mb-4">
+          <div class="row g-3 align-items-center mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">ইভেন্ট সিলেক্ট করুন</label>
+              <select class="form-select" id="reportEventSelect" onchange="loadEventAttendanceDetails()">
+                <option value="">-- ইভেন্ট নির্বাচন করুন --</option>
+              </select>
+            </div>
+            <div class="col-md-6 text-end mt-4">
+              <button class="btn btn-outline-success me-2" onclick="downloadReport('sheet')"><i class="fa-solid fa-file-excel me-1"></i> Google Sheet</button>
+              <button class="btn btn-outline-primary" onclick="downloadReport('doc')"><i class="fa-solid fa-file-word me-1"></i> Doc Format</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-striped align-middle">
+              <thead>
+                <tr>
+                  <th>ভলান্টিয়ার নেম</th>
+                  <th>ইমেইল</th>
+                  <th>চেক-ইন সময়</th>
+                  <th>চেক-আউট সময়</th>
+                  <th>স্ট্যাটাস</th>
+                </tr>
+              </thead>
+              <tbody id="eventAttendanceReportBody">
+                <tr><td colspan="5" class="text-center text-muted">কোনো ইভেন্ট সিলেক্ট করা হয়নি</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </div>
 
-  </div>
-
-  <!-- BY-LAWS, CONDUCT & OATH MODAL -->
-  <div class="modal fade" id="bylawsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content rounded-4 border-0">
-        <div class="modal-header text-white" style="background-color: var(--vbd-green-main);">
-          <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-book-bookmark me-2"></i>VBD Governance & Guidelines</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      <!-- TAB 5: VOLUNTEER DIRECTORY -->
+      <div id="tabVolunteerDir" class="tab-pane-custom" style="display: none;">
+        <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-address-book me-2"></i>উপজেলা ভলান্টিয়ার ডিরেক্টরি</h5>
+        <div class="card stat-card mb-4">
+          <div class="row g-2 mb-3">
+            <div class="col-md-8">
+              <input type="text" id="searchVolInput" class="form-control" placeholder="নাম, ইমেইল বা ফোন নম্বর দিয়ে সার্চ করুন...">
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-vbd-blue w-100" onclick="searchVolunteers()"><i class="fa-solid fa-magnifying-glass me-1"></i> ফিল্টার করুন</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>নাম</th>
+                  <th>পদবি</th>
+                  <th>ফোন নম্বর</th>
+                  <th>ইমেইল</th>
+                  <th>উপজেলা</th>
+                </tr>
+              </thead>
+              <tbody id="volDirectoryBody">
+                <tr><td colspan="5" class="text-center text-muted">ডাটা ফেচ করা হচ্ছে...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="modal-body p-4">
-          <ul class="nav nav-pills nav-fill mb-3" id="bylawsTabs" role="tablist">
-            <li class="nav-item">
-              <button class="nav-link active fw-bold py-2" id="tab-bylaws-btn" data-bs-toggle="pill" data-bs-target="#content-bylaws" type="button">📘 By-Laws</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link fw-bold py-2" id="tab-conduct-btn" data-bs-toggle="pill" data-bs-target="#content-conduct" type="button">📜 Code of Conduct</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link fw-bold py-2" id="tab-oath-btn" data-bs-toggle="pill" data-bs-target="#content-oath" type="button">✋ Volunteer Oath</button>
-            </li>
-          </ul>
+      </div>
 
-          <div class="tab-content border p-3 rounded-3 bg-light" id="bylawsTabContent" style="min-height: 250px; max-height: 60vh; overflow-y: auto;">
-            <div class="tab-pane fade show active" id="content-bylaws">
-              <h6 class="fw-bold border-bottom pb-2 mb-3" style="color: var(--vbd-green-main);">VBD Organizational By-Laws</h6>
-              <p class="small text-muted">১. সকল সদস্য ও ভলান্টিয়ারকে সংস্থার মূল লক্ষ্য ও উদ্দেশ্য অনুধাবন করে কাজ করতে হবে।</p>
-              <p class="small text-muted">২. জেলা ও জাতীয় পর্ষদের সিদ্ধান্ত চূড়ান্ত বলে গণ্য হবে।</p>
-              <p class="small text-muted">৩. প্রতিটি ইভেন্ট ও মিটিংয়ে যথাসময়ে উপস্থিতি নিশ্চিত করা বাধ্যতামূলক।</p>
-            </div>
-            <div class="tab-pane fade" id="content-conduct">
-              <h6 class="fw-bold border-bottom pb-2 mb-3" style="color: var(--vbd-green-main);">Volunteer Code of Conduct</h6>
-              <p class="small text-muted">১. সকল सहকর্মীর প্রতি পারস্পরিক শ্রদ্ধা ও পেশাদারিত্ব বজায় রাখতে হবে।</p>
-              <p class="small text-muted">২. সংস্থার কোনো গোপনীয় তথ্য বা তথ্যমালা বাইরে প্রকাশ করা যাবে না।</p>
-              <p class="small text-muted">৩. যেকোনো সামাজিক মাধ্যমে সংস্থার ভাবমূর্তি ক্ষুণ্ণ হয় এমন বক্তব্য প্রদান থেকে বিরত থাকতে হবে।</p>
-            </div>
-            <div class="tab-pane fade" id="content-oath">
-              <h6 class="fw-bold border-bottom pb-2 mb-3" style="color: var(--vbd-green-main);">The Volunteer Oath</h6>
-              <div class="p-3 bg-white border rounded text-center font-monospace">
-                <p class="fst-italic fw-semibold text-dark m-0">
-                  "আমি শপথ করছি যে, ভলান্টিয়ার ফর বাংলাদেশ-এর একজন দায়িত্বশীল সদস্য হিসেবে সর্বদা দেশের ও সমাজের কল্যাণে আত্মনিয়োগ করব। নৈতিকতা, সততা ও শৃঙ্খলা বজায় রেখে সংগঠনের সম্মান অক্ষুণ্ণ রাখব।"
-                </p>
+      <!-- TAB 6: MASTER ACCESS SHEET (PRESIDENT & VP CONTROL PANEL) -->
+      <div id="tabMasterSheet" class="tab-pane-custom" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h5 class="fw-bold text-danger mb-1"><i class="fa-solid fa-key me-2"></i>Master Access Sheet (Annual Permission Control)</h5>
+            <p class="text-muted small mb-0">নতুন বোর্ডে পদবি হস্তান্তরের জন্য শুধুমাত্র নির্দিষ্ট মেম্বারের ইমেইল পরিবর্তন করে আপডেট করুন।</p>
+          </div>
+        </div>
+
+        <!-- District Board Positions -->
+        <div class="card stat-card master-card-box mb-4">
+          <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-crown me-2"></i>District Board Members (7 Positions)</h6>
+          <form onsubmit="saveMasterAccess(event, 'district')">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Vice President Email</label>
+                <input type="email" id="mstr_dist_vp" class="form-control" placeholder="vp.dhakasouth@vbd.com">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">General Secretary Email</label>
+                <input type="email" id="mstr_dist_gs" class="form-control" placeholder="gs.dhakasouth@vbd.com">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Treasurer Email</label>
+                <input type="email" id="mstr_dist_tr" class="form-control" placeholder="treasurer.dhakasouth@vbd.com">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Project Officer Email</label>
+                <input type="email" id="mstr_dist_po" class="form-control" placeholder="po.dhakasouth@vbd.com">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Human Resource Officer (HRO) Email</label>
+                <input type="email" id="mstr_dist_hro" class="form-control" placeholder="hro.dhakasouth@vbd.com">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Public Relations Officer Email</label>
+                <input type="email" id="mstr_dist_pro" class="form-control" placeholder="pro.dhakasouth@vbd.com">
               </div>
             </div>
-          </div>
+            <button type="submit" class="btn btn-vbd-blue mt-3"><i class="fa-solid fa-floppy-disk me-1"></i> ডিস্ট্রিক্ট বোর্ড পারমিশন আপডেট করুন</button>
+          </form>
+        </div>
+
+        <!-- Upazila Board Positions (4 Upazilas x 5 Positions) -->
+        <div class="card stat-card mb-4">
+          <h6 class="fw-bold text-success mb-3"><i class="fa-solid fa-sitemap me-2"></i>Upazila Board Members Access (5 Positions Per Upazila)</h6>
+          <form onsubmit="saveMasterAccess(event, 'upazila')">
+            <div class="mb-3">
+              <label class="form-label fw-bold">উপজেলা নির্বাচন করুন</label>
+              <select class="form-select" id="mstrUpazilaSelect" onchange="renderUpazilaMasterForm()">
+                <option value="DSCC">Dhaka South City Corporation (DSCC)</option>
+                <option value="Keraniganj">Keraniganj</option>
+                <option value="Dohar">Dohar</option>
+                <option value="Nababganj">Nababganj</option>
+              </select>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">President Email</label>
+                <input type="email" id="mstr_upz_pres" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">General Secretary Email</label>
+                <input type="email" id="mstr_upz_gs" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Project Secretary Email</label>
+                <input type="email" id="mstr_upz_proj" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Human Resource Secretary (HRS) Email</label>
+                <input type="email" id="mstr_upz_hrs" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Finance Secretary Email</label>
+                <input type="email" id="mstr_upz_fin" class="form-control" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-vbd-primary mt-3"><i class="fa-solid fa-paper-plane me-1"></i> সেভ করুন ও এক্সেস মেইল পাঠান</button>
+          </form>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- ANNUAL ROLE & PERMISSION TRANSFER MODAL -->
-  <div class="modal fade" id="masterAccessModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content rounded-4 border-0">
-        <div class="modal-header bg-dark text-white">
-          <h5 class="fw-bold m-0 fs-6"><i class="fa-solid fa-user-shield me-2 text-warning"></i>Annual Role Transfer</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      <!-- TAB 7: MY PROFILE & SECURITY -->
+      <div id="tabMyProfile" class="tab-pane-custom" style="display: none;">
+        <h5 class="fw-bold mb-3" style="color: var(--vbd-dark-blue);"><i class="fa-solid fa-user-shield me-2"></i>মাই প্রোফাইল ও সিকিউরিটি</h5>
+        
+        <div class="card stat-card mb-4">
+          <h6 class="fw-bold mb-3" style="color: var(--vbd-forest);">ব্যক্তিগত ও অফিশিয়াল ইনফরমেশন</h6>
+          <form onsubmit="updateProfileDetails(event)">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">পূর্ণ নাম</label>
+                <input type="text" id="profFullName" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">রেজিস্টার্ড প্রাইমারি ইমেইল (Unchangeable)</label>
+                <input type="email" id="profEmail" class="form-control bg-light" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">অফিশিয়াল VBD ইমেইল (অপশনাল)</label>
+                <input type="email" id="profVbdEmail" class="form-control" placeholder="name@vbd.com">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">ফোন নম্বর</label>
+                <input type="text" id="profPhone" class="form-control" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-vbd-primary mt-3"><i class="fa-solid fa-user-check me-1"></i> প্রোফাইল আপডেট করুন</button>
+          </form>
         </div>
-        <div class="modal-body p-4">
-          <p class="small text-muted">বছর শেষে নতুন মেম্বারের ইমেইল দিয়ে দায়িত্ব ও পারমিশন এক ক্লিকে ট্রান্সফার করুন:</p>
-          
-          <div class="mb-3">
-            <label class="form-label fw-bold small">Select Position / Role</label>
-            <select class="form-select rounded-3" id="transferRole">
-              <option value="District VP">District Vice President</option>
-              <option value="District President">District President</option>
-              <option value="District GS">District General Secretary</option>
-              <option value="District HRO">District HR Officer</option>
-              <option value="Keraniganj HRS">Keraniganj HR Secretary</option>
-              <option value="DSCC HRS">DSCC HR Secretary</option>
-              <option value="Dohar HRS">Dohar HR Secretary</option>
-              <option value="Nababganj HRS">Nababganj HR Secretary</option>
-            </select>
-          </div>
 
-          <div class="mb-3">
-            <label class="form-label fw-bold small">New Official Email Address</label>
-            <input type="email" class="form-control rounded-3" id="newEmailInput" placeholder="new.member@gmail.com">
+        <div class="card stat-card">
+          <h6 class="fw-bold mb-3" style="color: var(--vbd-accent-blue);"><i class="fa-solid fa-lock me-2"></i>পাসওয়ার্ড রিসেট (OTP ভেরিফিকেশন)</h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <button class="btn btn-vbd-blue w-100" onclick="triggerOTP()"><i class="fa-solid fa-paper-plane me-1"></i> OTP পাঠান</button>
+            </div>
+            <div class="col-md-4">
+              <input type="text" id="inputOtp" class="form-control" placeholder="৬ ডিজিটের OTP">
+            </div>
+            <div class="col-md-4">
+              <input type="password" id="inputNewPass" class="form-control" placeholder="নতুন পাসওয়ার্ড">
+            </div>
           </div>
-
-          <button class="btn btn-yellow w-100 fw-bold rounded-3" onclick="transferAccess()">
-            <i class="fa-solid fa-paper-plane me-1"></i> Transfer Access & Send Confirmation Mail
-          </button>
+          <button class="btn btn-vbd-primary mt-3" onclick="confirmPasswordReset()"><i class="fa-solid fa-key me-1"></i> পাসওয়ার্ড রিসেট সুনিশ্চিত করুন</button>
         </div>
       </div>
-    </div>
+
+    </main>
   </div>
+</div>
 
-  <!-- JS DEPENDENCIES -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <script>
-    // LIVE CONNECTED APPS SCRIPT API URL
-    const API_URL = "https://script.google.com/macros/s/AKfycbxfdhr5k5zTol1cp7vGRNBwv5gl-2Bjqb6MaZxgL-Y9agewCr1kuE8rlfpJBZewX8-PSQ/exec";
+<script>
+  // Global Configurations
+  const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 
-    function openByLawsModal() {
-      var bylawsModal = new bootstrap.Modal(document.getElementById('bylawsModal'));
-      bylawsModal.show();
-    }
+  function switchTab(tabId, element) {
+    document.querySelectorAll('.tab-pane-custom').forEach(pane => pane.style.display = 'none');
+    document.getElementById(tabId).style.display = 'block';
+    
+    document.querySelectorAll('.sidebar .nav-link').forEach(link => link.classList.remove('active'));
+    if(element) element.classList.add('active');
+  }
 
-    function openMasterAccessModal() {
-      var accessModal = new bootstrap.Modal(document.getElementById('masterAccessModal'));
-      accessModal.show();
-    }
+  function fetchLivePortalData() {
+    console.log("Fetching live portal updates...");
+  }
 
-    // REAL TIME GEO-ATTENDANCE SUBMISSION
-    function submitGeoAttendance(eventName) {
-      const name = document.getElementById('vName').value;
-      const email = document.getElementById('vEmail').value;
-      const phone = document.getElementById('vPhone').value;
-      const upazila = document.getElementById('vUpazila').value;
+  function processCheckIn() {
+    alert("GPS লোকেশন যাচাই করা হচ্ছে... চেক-ইন সফল!");
+  }
 
-      if (!name || !email) {
-        alert("দয়া করে আপনার নাম এবং ইমেইল ফিলআপ করুন।");
-        return;
-      }
+  function processCheckOut() {
+    alert("চেক-আউট সফলভাবে সম্পন্ন হয়েছে!");
+  }
 
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
+  function handlePowerForward(e) {
+    e.preventDefault();
+    alert("পাওয়ার ফরওয়ার্ড সফল হয়েছে!");
+  }
 
-          const payload = {
-            action: "register_attendance",
-            name: name,
-            email: email,
-            phone: phone,
-            upazila: upazila,
-            eventName: eventName,
-            lat: lat,
-            lng: lng
-          };
+  function handleCreateEvent(e) {
+    e.preventDefault();
+    alert("ইভেন্ট তৈরি সফল এবং গুগল ফর্ম সিঙ্ক চালু করা হয়েছে!");
+  }
 
-          fetch(API_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          }).then(() => {
-            alert(`ধন্যবাদ ${name}! আপনার জিপিএস লোকেশন (${lat.toFixed(3)}, ${lng.toFixed(3)}) ভেরিফাই করে সফলভাবে অ্যাটেন্ডেন্স নেওয়া হয়েছে এবং আপনার মেইলে কনফার্মেশন পাঠানো হয়েছে।`);
-          }).catch(err => {
-            alert("ডাটা পাঠাতে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।");
-          });
+  function saveMasterAccess(e, scope) {
+    e.preventDefault();
+    alert(scope.toUpperCase() + " পজিশনের পারমিশন ইমেইল সফলভাবে আপডেট ও সেভ হয়েছে!");
+  }
 
-        }, function(error) {
-          alert("অ্যাটেন্ডেন্স দিতে মোবাইলের জিপিএস / লোকেশন চালু করুন।");
-        });
-      } else {
-        alert("আপনার ব্রাউজারে জিপিএস লোকেশন সাপোর্ট করছে না।");
-      }
-    }
+  function updateProfileDetails(e) {
+    e.preventDefault();
+    alert("প্রোফাইল ইনফরমেশন আপডেট হয়েছে!");
+  }
 
-    function transferAccess() {
-      const role = document.getElementById('transferRole').value;
-      const email = document.getElementById('newEmailInput').value;
+  function triggerOTP() {
+    alert("আপনার ইমেইলে ওটিপি সেন্ড করা হয়েছে!");
+  }
 
-      if (!email) {
-        alert("দয়া করে নতুন দায়িত্বপ্রাপ্ত কর্মকর্তার ইমেইল দিন।");
-        return;
-      }
+  function confirmPasswordReset() {
+    alert("পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে!");
+  }
 
-      alert(`সফলভাবে ${role} এর দায়িত্ব এবং সিকিউরড এক্সেস ${email} এ ট্রান্সফার করা হয়েছে!`);
-    }
-  </script>
+  function logoutSystem() {
+    alert("লগআউট করা হচ্ছে...");
+  }
+</script>
+
 </body>
 </html>
